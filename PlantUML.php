@@ -4,7 +4,7 @@
  * diagrams within a wiki page using PlantUML.
  *
  * Installation:
- *  1. Create a subdirectory PlanetUML in your extensions folder.
+ *  1. Create a subdirectory PlantUML in your extensions folder.
  *  2. Copy this file and the planetuml.jar file into this folder.
  *  3. Change the variable $planetImagetype to your preference.
  *  4. Adapt the getUploadPath and getUploadDirectory to your preference
@@ -91,7 +91,7 @@ if (!is_file($plantumlJar)) {
 // Install extension
 $wgExtensionCredits['parserhook'][] = array(
     'name' => 'UML',
-    'version' => '0.2',
+    'version' => '0.3',
     'author' => 'Roques A., Kersten Pieter J.',
     'url' => 'http://www.mediawiki.org/wiki/Extension:PlantUML',
     'description' => 'Renders a UML model from text using PlantUML.'
