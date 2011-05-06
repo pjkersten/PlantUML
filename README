@@ -1,0 +1,41 @@
+Hi, welcome to the PlantUML plugin for MediaWiki.
+The full project page for this plugin can be found on 
+
+   http://www.mediawiki.org/wiki/Extension:PlantUML
+
+In order to install this plugin, please follow the steps below.
+
+1. Go to the extensions folder of your MediaWiki installation. On RedHat and
+   derivates this will be /usr/share/mediawiki/extensions.
+   $ cd /usr/share/mediawiki/extensions
+
+2. Create a new subdirectory PlanetUML in this folder and move to this
+   directory.
+   $ mkdir PlantUML && cd PlantUML
+
+3. Get the plantuml.jar from SourceForge
+   wget https://downloads.sourceforge.net/project/plantuml/plantuml.jar
+   
+4. Move this file into the PlantUML directory as PlantUML.php
+   $ mv <downloaddir>/PlantUML.php .
+
+5. (Optional) Edit PlantUML.php and change the variable $planetImagetype
+   to your preference. Mind that SVG produces the superior graphics, but that
+   only PNG-images and image maps are "rock solid".
+
+6. Adapt the getUploadPath and getUploadDirectory to your preference
+   if you want these different from MediaWiki's standard settings.
+   Mind that these directories must be writeable by the system user
+   who runs MediaWiki.
+
+7. Put the following line near the end of your LocalSettings.php in
+   MediaWiki's root folder to include the extension:
+
+require_once('extensions/PlantUML/PlantUML.php');
+
+8. Reload http
+   $ service httpd graceful
+
+9. Enjoy!
+
+If you have suggestions or remarks, please join us on mediawiki.org!
