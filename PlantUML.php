@@ -5,16 +5,18 @@
  *
  * Installation:
  *  1. Create a subdirectory PlantUML in your extensions folder.
- *  2. Copy this file and the plantuml.jar file into this folder.
- *  3. Change the variable $plantImagetype to your preference.
- *  4. Adapt the getUploadPath and getUploadDirectory to your preference
+ *  2. Copy this file and (optionally) the plantuml.jar file into this folder.
+ *  3. Change the variable $plantImagetype to your preference. Mind that SVG
+ *     is only supported if you use the jar file locally.
+ *  4. Choose the right setting for $usecloud. See comments for that.
+ *  5. Adapt the getUploadPath and getUploadDirectory to your preference
  *     if you want these different from MediaWiki's standard settings.
- *  5. Put the following line near the end of your LocalSettings.php in
+ *  6. Put the following line near the end of your LocalSettings.php in
  *     MediaWiki's root folder to include the extension:
  *
  * require_once('extensions/PlantUML/PlantUML.php');
  *
- *  6. Enjoy!
+ *  7. Enjoy!
  *
  * CHANGES:
  *   Version 0.1: Roques, A.
@@ -28,31 +30,46 @@
  *     - Expand tabwidth to 4 spaces everywhere.
  *   Version 0.3: Kersten, Pieter J., May 5, 2011
  *     - Add getPageTitle() function from plugin page
+ *   Version 0.4: Kersten, Pieter J., May 6, 2011
+ *     - Include cloud API to produce a single plugin.
+ *     - Drop separate cloud version.
  */
 
 /**
+ * You can choose between cloud usage and local usage. The cloud version is
+ * light-weight, but limited in functionality. There are no embedded URLs and
+ * there are no SVG graphics yet. The local version supports both SVG-graphics
+ * and embedded URLs at the cost of local processing power. Default is to use
+ * the local version.
+ * Set the $usecloud to true in order to use the cloud.
+ */
+$usecloud = false;
+
+/**
  * You can change $plantumlJar to match your config if it is not installed
- * as advised above. Use quote if the path contains spaces characters.
+ * as advised above. Use quote if the path contains space characters.
  * You can use the basename if you put the jar in the same folder as this
- * file.
+ * file. Will be ignored when using the cloud.
  *
  * Example:
  *   $plantumlJar  = "\"d:/Program Files/PlantUML/plantuml.jar\"";
  *
  */
-$plantumlJar = 'plantuml.jar'; // Test version for embedded url's
+$plantumlJar = 'plantuml.jar';
 
 /**
  * Change $plantumlImagetype to either 'svg' or 'png'. Although SVG
  * delivers superior graphics over PNG, not all environments love it.
- * PNG-images and image maps always work.
+ * PNG-images and image maps always work. Usage of the cloud will reset
+ * this to 'png'.
  */
 $plantumlImagetype = 'svg';
  
 /**
  * You can change the result of the getUploadDirectory() and getUploadPath()
  * if you want to put generated images somewhere else.
- * By default, it equals the upload directory.
+ * By default, it equals the upload directory. Mind that the process creating
+ * the images must be able to create new files there.
  */
 function getUploadDirectory() {
     global $wgUploadDirectory;
@@ -83,15 +100,24 @@ if ( defined( 'MW_SUPPORTS_PARSERFIRSTCALLINIT' ) ) {
     $wgExtensionFunctions[] = 'wfPlantUMLExtension';
 }
 
-// Auto locate jar file
-if (!is_file($plantumlJar)) {
-    $plantumlJar = dirname(__FILE__).'/'.$plantumlJar;
+// Auto locate jar file for local usage
+if (!$usecloud) {
+    if (!is_file($plantumlJar)) {
+        $plantumlJar = dirname(__FILE__).'/'.$plantumlJar;
+    }
+    if (!is_file($plantumlJar)) {
+        $usecloud = true;
+    }
+}
+// Cloud version does not support SVG images (yet)
+if ($usecloud) {
+    $plantumlImagetype = 'png';
 }
 
 // Install extension
 $wgExtensionCredits['parserhook'][] = array(
     'name' => 'UML',
-    'version' => '0.3',
+    'version' => '0.4',
     'author' => 'Roques A., Kersten Pieter J.',
     'url' => 'http://www.mediawiki.org/wiki/Extension:PlantUML',
     'description' => 'Renders a UML model from text using PlantUML.'
@@ -143,21 +169,17 @@ function wrap_formula($PlantUML_Source) {
  *  - Use a filename a md5 hash of the uml source
  *  - Launch PlantUML to create the PNG file into the picture cache directory
  *
- * @param string PlantUML model
- * @param $dirname: directory of generated files
- * @param $filename_prefix: unique prefix for $dirname
+ * @param string PlantUML_Source
+ * @param string imgFile: full path of to-be-generated image file.
+ * @param string dirname: directory of generated files
+ * @param string filename_prefix: unique prefix for $dirname
  *
  * @returns the full path location of the rendered picture when
  *          successfull, false otherwise
  */
-function renderPlantUML($PlantUML_Source, $dirname, $filename_prefix) {
+function renderPlantUML($PlantUML_Source, $imgFile, $dirname, $filename_prefix) {
     global $plantumlJar, $plantumlImagetype;
  
-    $imgFile = $dirname."/".$filename_prefix.".$plantumlImagetype";
-    if (is_file($imgFile)) {
-        return $imgFile;
-    }
-
     $PlantUML_document = wrap_formula($PlantUML_Source);
  
     // create temporary uml text file
@@ -188,6 +210,32 @@ function renderPlantUML($PlantUML_Source, $dirname, $filename_prefix) {
     return false;
 }
 
+/**
+ * Renders a PlantUML model by the using the following method:
+ *  - Encode the source like explained here: http://plantuml.sourceforge.net/codephp.html
+ *  - Use as filename a md5 hash of the uml source
+ *  - Copy the image generated by http://www.plantuml.com in the upload directory
+ *
+ * @param string PlantUML_Source: the source of the UML image
+ * @param string imgFile: full path of to-be-generated image file.
+ * @returns true if the picture has been successfully saved to the picture
+ *          cache directory
+ */
+function renderPlantUML_cloud($PlantUML_Source, $imgFile) {
+    // Build URL that describes the image
+    $img = "http://www.plantuml.com/plantuml/img/"; 
+    $img .= encodep($PlantUML_Source); 
+ 
+    // Copy images into the local cache 
+    copy($img, $imgFile);
+ 
+    if (is_file($imgFile)) {
+        return $imgFile;
+    }
+ 
+    return false;
+}
+ 
 /**
  * Get a title for this page.
  * @returns title
@@ -234,12 +282,22 @@ function getImage($PlantUML_Source) {
     $dirname = getUploadDirectory();
     $full_path_prefix = $dirname."/".$filename_prefix;
     $result = array(
-        'mapid' => $formula_hash, 'src' => false, 'map' => '',
-        'file' => renderPlantUML($PlantUML_Source, $dirname, $filename_prefix)
+        'mapid' => $formula_hash, 'src' => false, 'map' => '', 'file' => ''
     );
+    $imgFile = $dirname."/".$filename_prefix.".$plantumlImagetype";
+    // Check cache. When found, reuse it. When not, generate image.
+    if (is_file($imgFile)) {
+        $result['file'] = $imgFile;
+    } else {
+        if ($usecloud) {
+            $result['file'] = renderPlantUML_cloud($PlantUML_Source, $imgFile);
+        } else {
+            $result['file'] = renderPlantUML($PlantUML_Source, $imgFile, $dirname, $filename_prefix);
+        }
+    }
     if ($result['file']) {
         $result['src'] = getUploadPath()."/".basename($result['file']);
-        if ($plantumlImagetype == 'png') {
+        if ((!$usecloud) && $plantumlImagetype == 'png') {
             $map_filename = $full_path_prefix.".cmapx";
             if (is_file($map_filename)) {
                 // map file is temporary data - read it and delete it.
@@ -314,3 +372,62 @@ function renderUML( $input, $argv ) {
     return $text;
 }
 
+/**
+ * PHP API Client Code
+ * See http://plantuml.sourceforge.net/codephp.html
+ */
+function encodep($text) { 
+    $data = mb_convert_encoding($text, 'UTF-8', mb_detect_encoding($text));
+    $compressed = gzdeflate($data, 9); 
+    return encode64($compressed); 
+} 
+ 
+function encode6bit($b) { 
+    if ($b < 10) { 
+        return chr(48 + $b); 
+    } 
+    $b -= 10; 
+    if ($b < 26) { 
+        return chr(65 + $b); 
+    } 
+    $b -= 26; 
+    if ($b < 26) { 
+        return chr(97 + $b); 
+    } 
+    $b -= 26; 
+    if ($b == 0) { 
+        return '-'; 
+    } 
+    if ($b == 1) { 
+        return '_'; 
+    } 
+    return '?'; 
+} 
+ 
+function append3bytes($b1, $b2, $b3) { 
+    $c1 = $b1 >> 2; 
+    $c2 = (($b1 & 0x3) << 4) | ($b2 >> 4); 
+    $c3 = (($b2 & 0xF) << 2) | ($b3 >> 6); 
+    $c4 = $b3 & 0x3F; 
+    $r = ""; 
+    $r .= encode6bit($c1 & 0x3F); 
+    $r .= encode6bit($c2 & 0x3F); 
+    $r .= encode6bit($c3 & 0x3F); 
+    $r .= encode6bit($c4 & 0x3F); 
+    return $r; 
+} 
+ 
+function encode64($c) { 
+    $str = ""; 
+    $len = strlen($c); 
+    for ($i = 0; $i < $len; $i+=3) { 
+        if ($i+2==$len) { 
+            $str .= append3bytes(ord(substr($c, $i, 1)), ord(substr($c, $i+1, 1)), 0); 
+        } else if ($i+1==$len) { 
+            $str .= append3bytes(ord(substr($c, $i, 1)), 0, 0); 
+        } else { 
+            $str .= append3bytes(ord(substr($c, $i, 1)), ord(substr($c, $i+1, 1)), ord(substr($c, $i+2, 1)));
+        } 
+    } 
+    return $str; 
+}
