@@ -9,7 +9,7 @@ In order to install this plugin, please follow the steps below.
    derivates this will be /usr/share/mediawiki/extensions.
    $ cd /usr/share/mediawiki/extensions
 
-2. Create a new subdirectory PlanetUML in this folder and move to this
+2. Create a new subdirectory PlantUML in this folder and move to this
    directory.
    $ mkdir PlantUML && cd PlantUML
 
