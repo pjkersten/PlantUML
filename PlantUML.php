@@ -42,6 +42,12 @@
  * and embedded URLs at the cost of local processing power. Default is to use
  * the local version.
  * Set the $usecloud to true in order to use the cloud.
+ * Mind that php must be able to open remote urls, so either check
+ * php.ini to contain 'allow_url_fopen = On' or add 
+ *    php_value allow_url_fopen On
+ * to either .htaccess or your (vhost) config file (Apache).
+ * Mind that httpd must be allowed to fire http-requests as well, and some
+ * environments (selinux notably) may prevent that in default install.
  */
 $usecloud = false;
 
