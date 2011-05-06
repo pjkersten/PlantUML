@@ -5,8 +5,8 @@
  *
  * Installation:
  *  1. Create a subdirectory PlantUML in your extensions folder.
- *  2. Copy this file and the planetuml.jar file into this folder.
- *  3. Change the variable $planetImagetype to your preference.
+ *  2. Copy this file and the plantuml.jar file into this folder.
+ *  3. Change the variable $plantImagetype to your preference.
  *  4. Adapt the getUploadPath and getUploadDirectory to your preference
  *     if you want these different from MediaWiki's standard settings.
  *  5. Put the following line near the end of your LocalSettings.php in
@@ -271,7 +271,7 @@ function renderSVG($image) {
     $dimensions = preg_replace('/.*style="width:(\d+);height:(\d+);".*/', 'width=${1} height=${2}', $parts[1]);
 
     #    'width="'.$width.'"'.' height="'.$height.'">'.
-    return '<object class="planetuml" type="image/svg+xml" data="'.$image['src'].'" '.
+    return '<object class="plantuml" type="image/svg+xml" data="'.$image['src'].'" '.
            $dimensions.
            '>Your browser has no SVG support. '.
            'Please install <a href="http://www.adobe.com/svg/viewer/install/">Adobe '.
@@ -294,7 +294,7 @@ function renderPNG($image) {
     } else {
         $usemap = '';
     }
-    return "<img class=\"planetuml\" src=\"{$image['src']}\"$usemap>{$image['map']}";
+    return "<img class=\"plantuml\" src=\"{$image['src']}\"$usemap>{$image['map']}";
 }
 
 # The callback function for converting the input text to HTML output

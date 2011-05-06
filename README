@@ -5,37 +5,52 @@ The full project page for this plugin can be found on
 
 In order to install this plugin, please follow the steps below.
 
-1. Go to the extensions folder of your MediaWiki installation. On RedHat and
-   derivates this will be /usr/share/mediawiki/extensions.
-   $ cd /usr/share/mediawiki/extensions
+1. Choose your usage style. You can either process images locally (on the
+   server where MediaWiki was installed) or in the cloud. The local version
+   supports SVG-images and embedded links, at the cost of local processing.
+   If you want this, use the file PlantUML.php
 
-2. Create a new subdirectory PlantUML in this folder and move to this
-   directory.
-   $ mkdir PlantUML && cd PlantUML
-
-3. Get the plantuml.jar from SourceForge
-   wget https://downloads.sourceforge.net/project/plantuml/plantuml.jar
+   The cloud version is lightweight for your server, but does not support
+   embedded links (yet) and is (still) stuck with PNG-images. If you can
+   live with this then choose PlantUML-cloud.php
    
-4. Move this file into the PlantUML directory as PlantUML.php
-   $ mv <downloaddir>/PlantUML.php .
+2. Go to the extensions folder of your MediaWiki installation. On RedHat and
+   derivates this will be /usr/share/mediawiki/extensions.
+   # cd /usr/share/mediawiki/extensions
 
-5. (Optional) Edit PlantUML.php and change the variable $planetImagetype
-   to your preference. Mind that SVG produces the superior graphics, but that
-   only PNG-images and image maps are "rock solid".
+3. Create a new subdirectory PlantUML in this folder and move to this
+   directory.
+   # mkdir PlantUML && cd PlantUML
 
-6. Adapt the getUploadPath and getUploadDirectory to your preference
-   if you want these different from MediaWiki's standard settings.
-   Mind that these directories must be writeable by the system user
-   who runs MediaWiki.
+4. Get the plantuml.jar from SourceForge (not with the cloud version)
+   # wget https://downloads.sourceforge.net/project/plantuml/plantuml.jar
+   
+5. Move the choosen php-file into the PlantUML directory
+   # mv <downloaddir>/PlantUML.php .
+   (or)
+   # mv <downloaddir>/PlantUML-cloud.php .
 
-7. Put the following line near the end of your LocalSettings.php in
+6. (Optional, local version only) Edit the PHP-file and change the variable
+   $plantumlImagetype to your preference. Mind that SVG produces the superior
+   graphics, but that only PNG-images and image maps are "rock solid".
+
+7. Adapt the getUploadPath and getUploadDirectory to your preference if you
+   want these different from MediaWiki's standard settings. Mind that these
+   directories must be writeable by the system user who runs MediaWiki.
+
+8. Put the following line near the end of your LocalSettings.php in
    MediaWiki's root folder to include the extension:
 
 require_once('extensions/PlantUML/PlantUML.php');
+(or)
+require_once('extensions/PlantUML/PlantUML-cloud.php');
 
-8. Reload http
+9. (cloud version only) Check your httpd settings. httpd must be able to send
+   HTTP-requests.
+
+10. Reload http
    $ service httpd graceful
 
-9. Enjoy!
+11. Enjoy!
 
 If you have suggestions or remarks, please join us on mediawiki.org!
