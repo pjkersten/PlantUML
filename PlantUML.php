@@ -132,8 +132,8 @@ $wgExtensionCredits['parserhook'][] = array(
 /**
  * Clean the image folder when required
  */
-function cleanImages() {
-    $title_hash = md5(getPageTitle());
+function cleanImages($parser=null) {
+    $title_hash = md5(getPageTitle($parser));
     $path = getUploadDirectory()."/uml-".$title_hash."-*.{svg,png,cmapx}";
     $files = glob($path, GLOB_BRACE);
     foreach ($files as $filename) {
@@ -148,9 +148,9 @@ function cleanImages() {
  * tag <uml> ... </uml>. The second parameter is the callback function
  * for processing the text between the tags.
  */
-function wfPlantUMLExtension() {
-    global $wgParser;
-    $wgParser->setHook( 'uml', 'renderUML' );
+function wfPlantUMLExtension($parser) {
+    $parser->setHook( 'uml', 'renderUML' );
+
     return true;
 }
  
@@ -246,12 +246,12 @@ function renderPlantUML_cloud($PlantUML_Source, $imgFile) {
  * Get a title for this page.
  * @returns title
  */
-function getPageTitle() {
+function getPageTitle($parser) {
     global $wgArticle;
     global $wgTitle;
     // Retrieving the title of a page is not that easy
     if (empty($wgTitle)) {
-        $title = $wgArticle->getTitle()->getText();
+        $title = $parser->getTitle()->getFulltext();
         return $title;
     }
     return $wgTitle;
@@ -277,11 +277,11 @@ function getPageTitle() {
  *   'mapid': the unique id for the rendered image map , useable for further
  *            HTML-rendering.
  */
-function getImage($PlantUML_Source) {
+function getImage($PlantUML_Source, $parser=null) {
     global $plantumlImagetype;
 
     // Compute hash
-    $title_hash = md5(getPageTitle());
+    $title_hash = md5(getPageTitle($parser));
     $formula_hash = md5($PlantUML_Source);
 
     $filename_prefix = 'uml-'.$title_hash."-".$formula_hash;
@@ -362,9 +362,9 @@ function renderPNG($image) {
 }
 
 # The callback function for converting the input text to HTML output
-function renderUML( $input, $argv ) {
+function renderUML( $input, $argv, $parser=null ) {
     global $plantumlImagetype;
-    $image = getImage($input);
+    $image = getImage($input, $parser);
  
     if ($image['src'] == false) {
         $text = "[An error occured in PlantUML extension]";
