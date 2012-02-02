@@ -279,6 +279,7 @@ function getPageTitle($parser) {
  */
 function getImage($PlantUML_Source, $parser=null) {
     global $plantumlImagetype;
+    global $usecloud;
 
     // Compute hash
     $title_hash = md5(getPageTitle($parser));
