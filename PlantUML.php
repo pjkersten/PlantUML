@@ -163,7 +163,8 @@ function wfPlantUMLExtension($parser) {
  */
 function wrap_formula($PlantUML_Source) {
     $string  = "@startuml\n";
-    $string .= "$PlantUML_Source\n";
+    // utf8 encode allows handling accents (french, etc.)
+    $string .= utf8_decode("$PlantUML_Source\n");
     $string .= "@enduml";
  
     return $string;
