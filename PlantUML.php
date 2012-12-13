@@ -278,7 +278,7 @@ function getPageTitle($parser) {
  *   'mapid': the unique id for the rendered image map , useable for further
  *            HTML-rendering.
  */
-function getImage($PlantUML_Source, $parser=null) {
+function getImage($PlantUML_Source, $argv, $parser=null) {
     global $plantumlImagetype;
     global $usecloud;
 
@@ -294,7 +294,8 @@ function getImage($PlantUML_Source, $parser=null) {
     );
     $imgFile = $dirname."/".$filename_prefix.".$plantumlImagetype";
     // Check cache. When found, reuse it. When not, generate image.
-    if (is_file($imgFile)) {
+    // Honor the redraw tag as found in <uml redraw>
+    if (is_file($imgFile) and not array_key_exists('redraw', $argv) ) {
         $result['file'] = $imgFile;
     } else {
         if ($usecloud) {
@@ -366,7 +367,7 @@ function renderPNG($image) {
 # The callback function for converting the input text to HTML output
 function renderUML( $input, $argv, $parser=null ) {
     global $plantumlImagetype;
-    $image = getImage($input, $parser);
+    $image = getImage($input, $argv, $parser);
  
     if ($image['src'] == false) {
         $text = "[An error occured in PlantUML extension]";
