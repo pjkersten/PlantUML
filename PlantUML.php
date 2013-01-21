@@ -163,8 +163,8 @@ function wfPlantUMLExtension($parser) {
  */
 function wrap_formula($PlantUML_Source) {
     $string  = "@startuml\n";
-    // utf8 encode allows handling accents (french, etc.)
-    $string .= utf8_decode("$PlantUML_Source\n");
+    // Allow ditaa and graphviz first-line directives and accents (french, ..)
+    $string .= preg_replace("/^\r?/n", "", utf8_decode($PlantUML_Source), 1) . "\n";
     $string .= "@enduml";
  
     return $string;
@@ -295,7 +295,7 @@ function getImage($PlantUML_Source, $argv, $parser=null) {
     $imgFile = $dirname."/".$filename_prefix.".$plantumlImagetype";
     // Check cache. When found, reuse it. When not, generate image.
     // Honor the redraw tag as found in <uml redraw>
-    if (is_file($imgFile) and not array_key_exists('redraw', $argv) ) {
+    if (is_file($imgFile) and !array_key_exists('redraw', $argv) ) {
         $result['file'] = $imgFile;
     } else {
         if ($usecloud) {
