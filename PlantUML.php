@@ -164,7 +164,7 @@ function wfPlantUMLExtension($parser) {
 function wrap_formula($PlantUML_Source) {
     $string  = "@startuml\n";
     // Allow ditaa and graphviz first-line directives and accents (french, ..)
-    $string .= preg_replace("/^\r?/n", "", utf8_decode($PlantUML_Source), 1) . "\n";
+    $string .= preg_replace("/^\r?\n/", "", utf8_decode($PlantUML_Source), 1) . "\n";
     $string .= "@enduml";
  
     return $string;
