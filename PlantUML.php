@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-$version = "0.5";
+$version = "0.6";
 
 /**
  * Parser hook extension adds a <uml> tag to wiki markup for rendering UML
