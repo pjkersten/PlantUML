@@ -266,6 +266,23 @@ function renderPlantUML_cloud($PlantUML_Source, $imgFile) {
  
     return false;
 }
+
+
+function renderPlantUML_cloud_map($PlantUML_Source, $mapFile) {
+    // Build URL that describes the image
+    $map = "http://www.plantuml.com/plantuml/map/"; 
+    $map .= encodep($PlantUML_Source); 
+ 
+    // Copy images into the local cache 
+    copy($map, $mapFile);
+ 
+    if (is_file($mapFile)) {
+        return $mapFile;
+    }
+ 
+    return false;
+}
+
  
 /**
  * Get a title for this page.
@@ -317,16 +334,27 @@ function getImage($PlantUML_Source, $argv, $parser=null) {
         'mapid' => $formula_hash, 'src' => false, 'map' => '', 'file' => ''
     );
     $imgFile = $dirname."/".$filename_prefix.".$plantumlImagetype";
+    $mapFile = $dirname."/".$filename_prefix.".map";
     // Check cache. When found, reuse it. When not, generate image.
     // Honor the redraw tag as found in <uml redraw>
-    if (is_file($imgFile) and !array_key_exists('redraw', $argv) ) {
+    if (is_file($imgFile) and is_file($mapFile) and !array_key_exists('redraw', $argv) ) {
         $result['file'] = $imgFile;
+        $result['mapfile'] = $mapFile;
     } else {
         if ($usecloud) {
             $result['file'] = renderPlantUML_cloud($PlantUML_Source, $imgFile);
+	    $result['mapfile'] = renderPlantUML_cloud_map($PlantUML_Source, $mapFile);
         } else {
             $result['file'] = renderPlantUML($PlantUML_Source, $imgFile, $dirname, $filename_prefix);
         }
+    }
+    if (is_file($result['mapfile'])) {
+                // map file is temporary data - read it and delete it.
+                $fp = fopen($result['mapfile'],'r');
+                $image_map_data = fread($fp, filesize($result['mapfile']));
+                fclose($fp);
+                // Replace generic ids with unique ids: first two ".." fields.
+                $result['map'] = preg_replace('/"[^"]*"/', "\"{$result['mapid']}\"", $image_map_data, 2);
     }
     if ($result['file']) {
         $result['src'] = getUploadPath()."/".basename($result['file']);
