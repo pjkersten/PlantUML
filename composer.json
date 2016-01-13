@@ -1,5 +1,5 @@
 {
-	"name": "mediawiki/plantuml-extension",
+	"name": "pjkersten/plantuml-extension",
 	"type": "library",
 	"description": "MediaWiki extension which renders plantuml markup as UML diagramm graphics",
 	"keywords": [
