@@ -261,8 +261,34 @@ function renderPlantUML_cloud($PlantUML_Source, $imgFile) {
     $img = "http://www.plantuml.com/plantuml/img/"; 
     $img .= encodep($PlantUML_Source); 
  
-    // Copy images into the local cache 
-    copy($img, $imgFile);
+    // Copy images into the local cache
+    // -------------------------------------------
+    // patch by Boly31 to support proxies
+    // see https://www.mediawiki.org/wiki/Extension_talk:PlantUML#PlantUML_with_a_dedicated_plantuml_server_behind_proxy
+		$proxy = getenv("http_proxy");
+		// default no proxy behavior
+		if ($proxy == "") {
+	  	copy($img, $imgFile);
+  	} else {
+			$proxyOpt = "tcp://" . $proxy;
+
+ 			$opts = array(
+  				'http'=>array
+				(
+					'method'=>"GET",
+					'proxy' => $proxyOpt,
+					'request_fulluri' => true  
+				)
+			);
+			$context = stream_context_create($opts);
+	
+			$contentx = file_get_contents($img,false,$context);
+			$openedfile = fopen($imgFile, "w");
+			fwrite($openedfile, $contentx);
+			fclose($openedfile);	
+		}
+		// -------------------------------------------
+	
  
     if (is_file($imgFile)) {
         return $imgFile;
