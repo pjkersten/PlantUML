@@ -219,8 +219,8 @@ function renderPlantUML($PlantUML_Source, $imgFile, $dirname, $filename_prefix) 
  
     // create temporary uml text file
     $umlFile = $dirname."/".$filename_prefix.".uml";
-    $fp = fopen($umlFile,"w+");
-    $w = fputs($fp,$PlantUML_document);
+    $fp = fopen($umlFile,"wb");
+    $w  = fputs($fp,mb_convert_encoding($PlantUML_document,'UTF-8'));
     fclose($fp);
  
     // Lauch PlantUML
