@@ -373,18 +373,21 @@ function getImage($PlantUML_Source, $argv, $parser=null) {
     } else {
         if ($usecloud) {
             $result['file'] = renderPlantUML_cloud($PlantUML_Source, $imgFile);
-	    $result['mapfile'] = renderPlantUML_cloud_map($PlantUML_Source, $mapFile);
+	    			$result['mapfile'] = renderPlantUML_cloud_map($PlantUML_Source, $mapFile);
         } else {
             $result['file'] = renderPlantUML($PlantUML_Source, $imgFile, $dirname, $filename_prefix);
         }
     }
-    if (is_file($result['mapfile'])) {
+    // do we have a mapfile?
+    if (isset($result['mapfile'])) {
+    	if (is_file($result['mapfile'])) {
                 // map file is temporary data - read it and delete it.
                 $fp = fopen($result['mapfile'],'r');
                 $image_map_data = fread($fp, filesize($result['mapfile']));
                 fclose($fp);
                 // Replace generic ids with unique ids: first two ".." fields.
                 $result['map'] = preg_replace('/"[^"]*"/', "\"{$result['mapid']}\"", $image_map_data, 2);
+    	}
     }
     if ($result['file']) {
         $result['src'] = getUploadPath()."/".basename($result['file']);
