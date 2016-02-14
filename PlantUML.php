@@ -2,6 +2,7 @@
 /**
  * Copyright (C) 2010 Arnoud Roques
  * Copyright (C) 2011 Pieter J. Kersten
+ * Copyright (C) 2016 Wolfgang Fahl
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-$version = "0.5";
+$version = "0.6";
 
 /**
  * Parser hook extension adds a <uml> tag to wiki markup for rendering UML
@@ -57,6 +58,8 @@ $version = "0.5";
  *   Version 0.5: Kersten, Pieter J., Aug 26, 2013
  *     - Make version a string in the top of this file
  *     - Move to "GPLv2 or any later version" - license.
+ *   Version 0.6: Fahl, Wolfgang 2016-02-14
+ *     - adds format option which can be given by tag attribute or as $wgPlantUmlFormat global variable
  */
 
 /**
@@ -148,7 +151,7 @@ if ($usecloud) {
 $wgExtensionCredits['parserhook'][] = array(
     'name' => 'UML',
     'version' => $version,
-    'author' => 'Roques A., Kersten Pieter J.',
+    'author' => 'Roques A., Kersten Pieter J., Fahl, W',
     'url' => 'http://www.mediawiki.org/wiki/Extension:PlantUML',
     'description' => 'Renders a UML model from text using PlantUML.'
 );
@@ -188,7 +191,8 @@ function wfPlantUMLExtension($parser) {
 function wrap_formula($PlantUML_Source) {
     $string  = "@startuml\n";
     // Allow ditaa and graphviz first-line directives and accents (french, ..)
-    $string .= preg_replace("/^\r?\n/", "", utf8_decode($PlantUML_Source), 1) . "\n";
+    // $string .= preg_replace("/^\r?\n/", "", utf8_decode($PlantUML_Source), 1) . "\n";
+    $string.=$PlantUML_Source;
     $string .= "@enduml";
  
     return $string;
@@ -226,12 +230,12 @@ function renderPlantUML($PlantUML_Source, $imgFile, $dirname, $filename_prefix) 
         $typestr = '';
     }
     $command = "java -jar ".$plantumlJar.
-               "{$typestr} -o \"{$dirname}\" \"{$umlFile}\"";
+               "{$typestr} -charset UTF-8 -o \"{$dirname}\" \"{$umlFile}\"";
  
     $status_code = exec($command);
  
     // Delete temporary uml text file
-    unlink($umlFile);
+    // unlink($umlFile);
  
     // Only return existing path names.
     if (is_file($imgFile)) {
@@ -388,22 +392,47 @@ function renderPNG($image) {
     return "<img class=\"plantuml\" src=\"{$image['src']}\"$usemap>{$image['map']}";
 }
 
-# The callback function for converting the input text to HTML output
-function renderUML( $input, $argv, $parser=null ) {
+/**
+ * This call back function renders UML with PlantUML based on the information provided by $input.
+ * @param format 
+ *   if set the use the given format - it may be png or svg
+ */
+function renderUML( $input, $args, Parser $parser, PPFrame $frame ) {
     global $plantumlImagetype;
-    $image = getImage($input, $argv, $parser);
+    
+    if (isset($args["format"])) {
+  	  $format=$args["format"];
+  	  $format=$parser->recursiveTagParse( $format, $frame );
+    } else {
+      $format=setProperty( 'Format', $plantumlImagetype );
+    }
+    $image = getImage($input, $args, $parser);
  
     if ($image['src'] == false) {
         $text = "[An error occured in PlantUML extension]";
     } else {
-        if ($plantumlImagetype == 'svg') {
+        if ($format == 'svg') {
             $text = renderSVG($image);
+        } else if ($format == 'png') {
+        		$text = renderPNG($image);
         } else {
-            $text = renderPNG($image);
+            $text ="<span style='color:red'>PlantUML extension error - unknown format: ".$format."</span>";
         }
     }
     return $text;
 }
+
+  /**
+	 * Return a property for plantuml using global, request or passed default
+	 */
+	function setProperty( $name, $default ) {
+		global $wgRequest;
+		$prefix="PlantUml";
+		if ( $wgRequest->getText( $prefix.$name ) )        return $wgRequest->getText( $prefix.$name );
+		if ( $wgRequest->getText( "amp;".$prefix.$name ) ) return $wgRequest->getText( "amp;".$prefix.$name ); // hack to handle ampersand entities in URL
+		if ( isset( $GLOBALS["wg".$prefix.$name] ) ) return $GLOBALS["wg".$prefix.$name];
+		return $default;
+	}
 
 /**
  * PHP API Client Code
