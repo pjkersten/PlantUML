@@ -5,8 +5,9 @@ The full project page for this plugin can be found on
    
 
 # Prerequisites
-A [Java](https://www.java.com/en/) installation. Can also be [OpenJDK](http://openjdk.java.net/)
-[GraphViz extension](https://www.mediawiki.org/wiki/Extension:GraphViz)
+1. A [Java](https://www.java.com/en/) installation. Can also be [OpenJDK](http://openjdk.java.net/)
+
+2. [GraphViz extension](https://www.mediawiki.org/wiki/Extension:GraphViz)
 
 # Installation
 
