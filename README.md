@@ -9,6 +9,8 @@ The full project page for this plugin can be found on
 
 2. [GraphViz extension](https://www.mediawiki.org/wiki/Extension:GraphViz)
 
+3. Prerequistes of GraphViz. Basically if you get the GraphViz extension running you should also be able to get PlantUML to run.
+
 # Installation
 
 ## With Composer
