@@ -5,7 +5,7 @@ The full project page for this plugin can be found on
    
 
 # Prerequisites
-1. A [Java](https://www.java.com/en/) installation. Can also be [OpenJDK](http://openjdk.java.net/)
+1. A ![Java Icon](https://upload.wikimedia.org/wikipedia/de/thumb/e/e1/Java-Logo.svg/75px-Java-Logo.svg.png "Java") [Java](https://www.java.com/en/) installation. Can also be [OpenJDK](http://openjdk.java.net/)
 
 2. [GraphViz extension](https://www.mediawiki.org/wiki/Extension:GraphViz)
 
