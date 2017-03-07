@@ -1,9 +1,20 @@
-Hi, welcome to the PlantUML plugin for MediaWiki.
+Hi, welcome to the [PlantUML](http://plantuml.com/) plugin for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki).
 The full project page for this plugin can be found on 
 
    http://www.mediawiki.org/wiki/Extension:PlantUML
+   
 
-In order to install this plugin, please follow the steps below.
+# Prerequisites
+A [Java](https://www.java.com/en/) installation. Can also be [OpenJDK](http://openjdk.java.net/)
+[GraphViz extension](https://www.mediawiki.org/wiki/Extension:GraphViz)
+
+# Installation
+
+## With Composer
+[Composer support is in preparation] (https://www.mediawiki.org/wiki/User_talk:Legoktm#Adding_Extension_PlantUML_to_packagist)
+
+
+## Without Composer
 
 1. Go to the extensions folder of your MediaWiki installation. On RedHat and
    derivates this will be /usr/share/mediawiki/extensions.
@@ -49,4 +60,5 @@ require_once('extensions/PlantUML/PlantUML.php');
 
 11. Enjoy!
 
-If you have suggestions or remarks, please drop a note!
+# Issues
+If you have suggestions or remarks, please [file an issue](https://github.com/pjkersten/PlantUML/issues)!

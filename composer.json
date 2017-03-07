@@ -17,7 +17,8 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3.0"
+		"php": ">=5.3.0",
+		"mediawiki/graph-viz": "*"
 	},
 	"autoload": {
 		"psr-4": {
