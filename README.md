@@ -51,13 +51,13 @@ A [Java](https://www.java.com/en/) installation. Can also be [OpenJDK](http://op
 
 8. Put the following line near the end of your LocalSettings.php in
    MediaWiki's root folder to include the extension:
-
-require_once('extensions/PlantUML/PlantUML.php');
+   
+   `require_once('extensions/PlantUML/PlantUML.php');`
 
 9. When using the cloud, make sure that httpd can submit HTTP-requests.
 
 10. Reload http
-   `service httpd graceful`
+   `service httpd graceful
 
 11. Enjoy!
 
