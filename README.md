@@ -1,4 +1,4 @@
-Hi, welcome to the [PlantUML](http://plantuml.com/) plugin for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki).
+Hi, welcome to the [PlantUML](http://plantuml.com/) plugin for ![Mediawiki Icon](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/MediaWiki_logo_reworked_2.svg/154px-MediaWiki_logo_reworked_2.svg.png "MediaWiki Icon")[MediaWiki](https://www.mediawiki.org/wiki/MediaWiki).
 The full project page for this plugin can be found on 
 
    http://www.mediawiki.org/wiki/Extension:PlantUML
