@@ -1,0 +1,45 @@
+{
+    "name": "UML",
+    "version": "0.6",
+    "author": [
+        "Arnoud Roques",
+        "Pieter J. Kersten",
+        "Wolfgang Fahl",
+        "Frédéric Planchon"
+    ],
+    "url": "https://www.mediawiki.org/wiki/Extension:PlantUML",
+    "descriptionmsg": "plantuml-desc",
+    "license-name": "GPL-2.0",
+    "type": "parserhook",
+    "requires": {
+        "MediaWiki": ">= 1.26.0"
+    },
+    "config": {
+        "PlantUmlUseCloud": false,
+        "PlantUmlCloudURI": "http://www.plantuml.com/plantuml/",
+        "PlantUmlJarFile": "plantuml.jar",
+        "PlantUmlFormat": "svg"
+    },
+    "ConfigRegistry": {
+        "PlantUml": "GlobalVarConfig::newInstance"
+    },
+    "APIModules": {
+    },
+    "AutoloadClasses": {
+        "PlantUML": "PlantUML.body.php"
+    },
+    "Hooks": {
+        "ParserFirstCallInit": [
+            "PlantUML::onParserFirstCallInit"
+        ],
+        "PageContentSave": [
+            "PlantUML::onPageContentSave"
+        ]
+    },
+    "MessagesDirs": {
+        "PlantUML": [
+            "i18n"
+        ]
+    },
+    "manifest_version": 1
+}
