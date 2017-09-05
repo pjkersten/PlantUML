@@ -27,37 +27,36 @@ The full project page for this plugin can be found on
    directory.
    `mkdir PlantUML && cd PlantUML`
    
-3. Move the PlantUML.php file into the PlantUML directory.
-   `mv <downloaddir>/PlantUML.php`.
+3. Move the all downloaded file (PlantUML.php, PlantUML.body.php, extension.json, i18n, ...) into the PlantUML directory.
+   `mv <downloaddir>/{PlantUML.php,PlantUML.body.php,extension.json,i18n}`.
 
 4. Choose your usage style. You can either process images locally (on the
    server where MediaWiki was installed) or in the cloud. The local version
    supports SVG-images and embedded urls, at the cost of local processing.
-   The cloud version is lightweight for your server, but does not support
-   embedded urls (yet) and is (still) stuck with PNG-images.
+   The cloud version is lightweight for your server.
    Default local processing is expected. If you want to use the cloud,
-   please edit the PlantUML.php file and change $usecloud to true.
+   please set to LocalSettings.php $wgPlantUmlUseCloude to true.
 
 5. When using local processing: get the plantuml.jar from SourceForge
 
    `wget https://downloads.sourceforge.net/project/plantuml/plantuml.jar`
    
-6. (Optional) Edit PlantUML.php and change the variable $plantumlImagetype
+6. (Optional) Set to LocalSettings.php the variable $wgPlantUmlFormat
    to your preference. Mind that SVG produces the superior graphics, but that
-   only PNG-images and image maps are "rock solid". If you use the cloud, it
-   will always generate PNG images. Local processing defaults to SVG.
+   only PNG-images and image maps are "rock solid". (defaults: svg)
 
 7. (Optional) Adapt the getUploadPath and getUploadDirectory to your
    preference if you want these different from MediaWiki's standard settings.
    Mind that these directories must be writeable by the system user who runs
    MediaWiki.
 
-8. Put the following line near the end of your LocalSettings.php in
+8. Put the following line to your LocalSettings.php in
    MediaWiki's root folder to include the extension:
    
-   `require_once('extensions/PlantUML/PlantUML.php');`
+   `wfLoadExtension( 'PlantUML' );`
 
 9. When using the cloud, make sure that httpd can submit HTTP-requests.
+   (Optional) Adapt $wgPlantUmlCloudURI to use your private PlantUml server
 
 10. Reload http
    `service httpd graceful
