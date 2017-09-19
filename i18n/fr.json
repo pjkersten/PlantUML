@@ -1,0 +1,8 @@
+{
+    "@metadata": {
+        "authors": [
+            "Frederic Planchon"
+        ]
+    },
+    "plantuml-desc": "Génère un modèle UML à partir d'un texte en utilisant PlantUML."
+}
