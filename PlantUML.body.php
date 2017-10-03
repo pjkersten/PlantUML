@@ -2,7 +2,7 @@
 /**
  * Copyright (C) 2010 Arnoud Roques
  * Copyright (C) 2011 Pieter J. Kersten
- * Copyright (C) 2016 Wolfgang Fahl
+ * Copyright (C) 2016-2017 Wolfgang Fahl
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
