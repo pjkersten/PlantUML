@@ -123,10 +123,14 @@ class PlantUML {
             if (is_file($result['mapfile'])) {
                 // map file is temporary data - read it and delete it.
                 $fp = fopen($result['mapfile'],'r');
-                $image_map_data = fread($fp, filesize($result['mapfile']));
+                $fsize=filesize($result['mapfile']);
+                if ($fsize>0)
+                  $image_map_data = fread($fp, $fsize);
                 fclose($fp);
-                // Replace generic ids with unique ids: first two ".." fields.
-                $result['map'] = preg_replace('/"[^"]*"/', "\"{$result['mapid']}\"", $image_map_data, 2);
+                if ($fsize>0) {
+                  // Replace generic ids with unique ids: first two ".." fields.
+                  $result['map'] = preg_replace('/"[^"]*"/', "\"{$result['mapid']}\"", $image_map_data, 2);
+                }
             }
         }
         if ($result['file']) {
