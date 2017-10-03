@@ -322,12 +322,13 @@ class PlantUML {
     function getPageTitle($parser) {
         global $wgArticle;
         global $wgTitle;
+	$title=$wgTitle;
         // Retrieving the title of a page is not that easy
         if (empty($wgTitle)) {
-            $title = $parser->getTitle()->getFulltext();
-            return $title;
+	    if ($parser!=null)	
+            	$title = $parser->getTitle()->getFulltext();
         }
-        return $wgTitle;
+        return $title;
     }
 
     /**
