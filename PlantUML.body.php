@@ -18,7 +18,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+use MediaWiki\Logger\LoggerFactory;
 
+/**
+ * the Plant UML extension main class
+ */
 class PlantUML {
 
     /**
@@ -44,6 +48,17 @@ class PlantUML {
         return true;
     }
 
+	/** 
+	 * construct me
+	 */
+	function __construct() {
+		$this->logger = LoggerFactory::getInstance( 'PlantUML' );
+                $this->debug = $this->getProperty( 'Debug' );
+		if ($this->debug) {
+			$this->logger->debug("PlantUML constructed");
+		}
+	}
+
     /**
     * This call back function renders UML with PlantUML based on the information provided by $input.
     * @param format
@@ -58,8 +73,9 @@ class PlantUML {
         }
         $image = $this->getImage($input, $args, $parser);
 
+	// if there is no image
         if ($image['src'] == false) {
-            $text = "[An error occured in PlantUML extension]";
+            $text = "[An error occured in PlantUML extension: '".implode(",",$image)."']";
         } else {
             if ($format == 'svg') {
                 $text = $this->renderSVG($image);
@@ -94,17 +110,19 @@ class PlantUML {
      */
     function getImage($PlantUML_Source, $argv, $parser=null) {
         // Compute hash
-        $title_hash = md5($this->getPageTitle($parser));
+	$title=$this->getPageTitle($parser);
+        $title_hash = md5($title);
         $formula_hash = md5($PlantUML_Source);
 
         $filename_prefix = 'uml-'.$title_hash."-".$formula_hash;
         $dirname = $this->getUploadDirectory();
         $full_path_prefix = $dirname."/".$filename_prefix;
-        $result = array(
-            'mapid' => $formula_hash, 'src' => false, 'map' => '', 'file' => ''
-        );
         $imgFile = $dirname."/".$filename_prefix.".".$this->getProperty('Format');
         $mapFile = $dirname."/".$filename_prefix.".map";
+        // setup the result map
+        $result = array(
+            'title' => $title, 'mapid' => $formula_hash, 'src' => false, 'map' => '', 'file' => ''
+        );
         // Check cache. When found, reuse it. When not, generate image.
         // Honor the redraw tag as found in <uml redraw>
         if (is_file($imgFile) and is_file($mapFile) and !array_key_exists('redraw', $argv) ) {

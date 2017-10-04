@@ -16,6 +16,7 @@
     },
     "config": {
         "PlantUmlUseCloud": false,
+        "PlantUmlDebug": false,
         "PlantUmlCloudURI": "http://www.plantuml.com/plantuml/",
         "PlantUmlJarFile": "plantuml.jar",
         "PlantUmlFormat": "svg"
