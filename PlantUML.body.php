@@ -252,14 +252,29 @@ class PlantUML {
         $command = "java -jar ".$jarFile." ".
                 "{$typestr} -charset UTF-8 -o \"{$dirname}\" \"{$umlFile}\"";
 
-        $status_code = exec($command);
+	// execute the java command
+        exec($command,$ouput,$status_code);
+	if ($this->debug) {
+		$this->logger->debug("command '".$command."' returned status code=".$status_code."");
+        }
 
-        // Delete temporary uml text file
-        unlink($umlFile);
+	if ($this->debug) {
+		$this->logger->debug("image file '".$imgFile."'");
+        }
 
         // Only return existing path names.
         if (is_file($imgFile)) {
+            // Delete temporary uml text file 
+            unlink($umlFile);
             return $imgFile;
+        } else {
+		if ($this->debug) {
+                        $this->logger->debug("image file is missing");
+			// keep temporary uml text file to check
+                } else {
+            		// Delete temporary uml text file
+              		unlink($umlFile);
+		}
         }
 
         return false;
