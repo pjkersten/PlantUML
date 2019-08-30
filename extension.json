@@ -5,7 +5,8 @@
         "Arnoud Roques",
         "Pieter J. Kersten",
         "Wolfgang Fahl",
-        "Frédéric Planchon"
+        "Frédéric Planchon",
+        "Matthias Oestreicher"
     ],
     "url": "https://www.mediawiki.org/wiki/Extension:PlantUML",
     "descriptionmsg": "plantuml-desc",
@@ -19,7 +20,12 @@
         "PlantUmlDebug": false,
         "PlantUmlCloudURI": "http://www.plantuml.com/plantuml/",
         "PlantUmlJarFile": "plantuml.jar",
-        "PlantUmlFormat": "svg"
+        "PlantUmlIncludePath": "include",
+        "PlantUmlFormat": "png",
+        "PlantUmlFormulaReplaceFrom": ["@startuml","@enduml"],
+        "PlantUmlFormulaReplaceTo": [],
+        "PlantUmlFormulaReplaceFromExample": ["[[MYWIKI","]]","@startuml","@enduml"],
+        "PlantUmlFormulaReplaceToExample": ["<font color=#00008B>[[http://mywiki/pathto/index.php","]]</font>"]
     },
     "ConfigRegistry": {
         "PlantUml": "GlobalVarConfig::newInstance"
@@ -35,6 +41,9 @@
         ],
         "PageContentSave": [
             "PlantUML::onPageContentSave"
+        ],
+        "PageViewUpdates": [
+            "PlantUML::onPageViewUpdates"
         ]
     },
     "MessagesDirs": {
