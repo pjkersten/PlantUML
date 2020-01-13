@@ -110,6 +110,7 @@ class	PlantUML {
 	 *	 if	set	the	use	the	given	format - it	may	be png or	svg
 	 */
 	function renderUML(	$input,	$args, Parser	$parser, PPFrame $frame	)	{
+		$parser->disableCache();
 		if (isset($args["format"]))	{
 			$format=$args["format"];
 			$format=$parser->recursiveTagParse(	$format, $frame	);
