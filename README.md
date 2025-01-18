@@ -1,3 +1,6 @@
+# Sunset
+As of 2025-01 i have closed all issues. Personally i will not put any further effort into this. Wolfgang
+
 Hi, welcome to the [PlantUML](http://plantuml.com/) plugin for ![Mediawiki Icon](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/MediaWiki_logo_reworked_2.svg/154px-MediaWiki_logo_reworked_2.svg.png "MediaWiki Icon")[MediaWiki](https://www.mediawiki.org/wiki/MediaWiki).
 The full project page for this plugin can be found on 
 
